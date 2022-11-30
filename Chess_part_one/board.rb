@@ -28,16 +28,17 @@ class Board
             raise "out of bounds"
         end
 
+        unless self[start_pos].moves.include?(end_pos)
+            raise "invalid move"
+        end
 
 
         current = self[start_pos]
-        self[start_pos] = NullPiece.new(self, start_pos, nil)
+        self[start_pos] = NullPiece.instance
         self[end_pos] = current
         current.pos = end_pos
+
     end
-
-    
-
 
 
     def render
@@ -49,7 +50,7 @@ class Board
             end
             puts ""
         end
-        return " "
+        puts "-----------------------------"
     end
 
     def start_board
@@ -89,7 +90,7 @@ class Board
             j = 0
             while j < @grid.length
                 if self[[i,j]] == :_ 
-                    self[[i,j]] = NullPiece.new(self,[i,j], nil)
+                    self[[i,j]] = NullPiece.instance # (self,[i,j], nil)
                 end
                 j += 1
             end
@@ -103,9 +104,8 @@ end
 b = Board.new
 b.start_board
 b.render
-b.move_piece(:black, [1,3], [5,7])
-b.move_piece(:black, [0,3], [2,3])
-b.move_piece(:black, [2,3], [6,7])
+b.move_piece(:black, [1,1], [2,1])
+b.render
 queen = b[[6,7]]
-p queen.valid_moves
+p queen.moves
 b.render

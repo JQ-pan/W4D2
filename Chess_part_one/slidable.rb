@@ -1,7 +1,27 @@
 module Slidable
 
-    def grow_unblocked_moves_in_dir(move_dir)
-        if move_dir == :hor
+    def moves
+        possible_moves = grow_unblocked_moves_in_dir
+        select_moves = []
+        possible_moves.each do |dir, arr|
+            arr.each do |xy|
+                if @board[xy].is_a?(NullPiece)
+                    select_moves << xy
+                elsif @board[xy].team == self.team
+                    break
+                else
+                    select_moves << xy
+                    break
+                end
+            end
+        end
+        select_moves
+    end
+
+    private
+
+    def grow_unblocked_moves_in_dir
+        if self.move_dir == :hor
             horizontal_dirs = Hash.new {|h,k| h[k] = []}
             (@pos[1]-1).downto(0).each do |ydx|
                 horizontal_dirs[:left] << [@pos[0], ydx]
@@ -17,7 +37,7 @@ module Slidable
             end
             return horizontal_dirs
         end
-        if move_dir == :diag
+        if self.move_dir == :diag
             diagonal_dirs = Hash.new {|h,k| h[k] = []}
             x = @pos[0]
             y = @pos[1]
@@ -49,49 +69,54 @@ module Slidable
             end
             return diagonal_dirs
         end
-        if move_dir == :both
-            moves = Hash.new{|h,k| h[k] = []}
+        if self.move_dir == :both
+            both = Hash.new{|h,k| h[k] = []}
             (@pos[1]-1).downto(0).each do |ydx|
-                moves[:left] << [@pos[0], ydx]
+                both[:left] << [@pos[0], ydx]
             end
             (@pos[1]+1..7).each do |ydx|
-                moves[:right] << [@pos[0], ydx]
+                both[:right] << [@pos[0], ydx]
             end
             (@pos[0]-1).downto(0).each do |xdx|
-                moves[:up] << [xdx, @pos[1]]
+                both[:up] << [xdx, @pos[1]]
             end
             (@pos[0]+1..7).each do |xdx|
-                moves[:down] << [xdx, @pos[1]]
+                both[:down] << [xdx, @pos[1]]
             end
             x = @pos[0]
             y = @pos[1]
             while x < 7 && y < 7
                 x += 1
                 y += 1
-                moves[:dr] << [x,y]
+                both[:dr] << [x,y]
             end
             x = @pos[0]
             y = @pos[1]
             while x > 0 && y < 7
                 x -= 1
                 y += 1
-                moves[:ur] << [x,y]
+                both[:ur] << [x,y]
             end
             x = @pos[0]
             y = @pos[1]
             while x < 7 && y > 0
                 x += 1
                 y -= 1
-                moves[:dl] << [x,y]
+                both[:dl] << [x,y]
             end
             x = @pos[0]
             y = @pos[1]
             while x > 0 && y > 0
                 x -= 1
                 y -= 1
-                moves[:ul] << [x,y]
+                both[:ul] << [x,y]
             end
-            return moves
+            return both
         end
     end
+
+    def move_dirs
+        raise "Not initiated"
+    end
+
 end
