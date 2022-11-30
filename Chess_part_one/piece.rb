@@ -9,7 +9,6 @@ class Piece
         @pos = pos
         @team = team
         @symbol = nil
-        @move_dir = nil
     end
 
     def empty?
@@ -34,6 +33,7 @@ class Sliding_pieces < Piece
     include Slidable
     def initalize(board, pos, team)
         super
+        @move_dir = nil
     end
 
     def valid_moves
@@ -75,15 +75,6 @@ class Rook < Sliding_pieces
         @symbol = :R
         @move_dir = :hor
     end
-
-    
-end
-
-class Knight < Stepping_pieces
-    def initialize(board, pos, team)
-        super
-        @symbol = :N
-    end
 end
 
 class Bishop < Sliding_pieces
@@ -91,6 +82,13 @@ class Bishop < Sliding_pieces
         super
         @symbol = :B
         @move_dir = :diag
+    end
+end
+
+class Knight < Stepping_pieces
+    def initialize(board, pos, team)
+        super
+        @symbol = :N
     end
 end
 
