@@ -8,66 +8,69 @@ class Board
     end
 
     def [](pos)
-        x, y = pos[0], pos[1]
-        @grid[x][y]
+        @grid[pos[0]][pos[1]]
     end
 
     def []=(pos, val)
-        @grid[pos] = val # if @grid[pos] == :_
+        @grid[pos[0]][pos[1]] = val # if @grid[pos] == :_
     end
 
     def move_piece(start_pos, end_pos)
-        current = @grid[start_pos]
-        @grid[start_pos] = :_
-        @grid[end_pos] = current
+        if self[start_pos].is_a?(NullPiece)
+            raise "no piece here"
+        end
+        current = self[start_pos]
+        self[start_pos] = :_
+        self[end_pos] = current
     end
 
     def render
         @grid.each do |row|
-            # row.each do |ele|
-            #     p ele.name
-            # end
-            p row
+            row.each do |ele|
+                print "#{ele.name} "
+
+            end
+            puts ""
         end
     end
 
     def start_board
         # Rook starting pos
-        @grid[0,0] = Rook.new(:R, [0,0])
-        @grid[0,7] = Rook.new(:R, [0,7])
-        @grid[7,0] = Rook.new(:R, [7,0])
-        @grid[7,7] = Rook.new(:R, [7,7])
+        self[[0,0]] = Rook.new(:R, [0,0], false)
+        self[[0,7]] = Rook.new(:R, [0,7], false)
+        self[[7,0]] = Rook.new(:R, [7,0], true)
+        self[[7,7]] = Rook.new(:R, [7,7], true)
 
         # Knight starting pos
-        @grid[0,1] = Knight.new(:N,[0,1])
-        @grid[0,6] = Knight.new(:N,[0,6])
-        @grid[7,1] = Knight.new(:N,[7,1])
-        @grid[7,6] = Knight.new(:N,[7,6])
+        self[[0,1]] = Knight.new(:N,[0,1], false)
+        self[[0,6]] = Knight.new(:N,[0,6], false)
+        self[[7,1]] = Knight.new(:N,[7,1], true)
+        self[[7,6]] = Knight.new(:N,[7,6], true)
 
         # Bishop starting pos
-        @grid[0,2] = Bishop.new(:B,[0,2])
-        @grid[0,5] = Bishop.new(:B,[0,5])
-        @grid[7,2] = Bishop.new(:B,[7,2])
-        @grid[7,5] = Bishop.new(:B,[7,5])
+        self[[0,2]] = Bishop.new(:B,[0,2], false)
+        self[[0,5]] = Bishop.new(:B,[0,5], false)
+        self[[7,2]] = Bishop.new(:B,[7,2], true)
+        self[[7,5]] = Bishop.new(:B,[7,5], true)
 
         # Queen starting pos
-        @grid[0,3] = Queen.new(:Q,[0,3])
-        @grid[7,3] = Queen.new(:Q,[7,3])
+        self[[0,3]] = Queen.new(:Q,[0,3], false)
+        self[[7,3]] = Queen.new(:Q,[7,3], true)
 
         # King starting pos
-        @grid[0,4] = King.new(:K,[0,4])
-        @grid[7,4] = King.new(:K,[7,4])
+        self[[0,4]] = King.new(:K,[0,4], false)
+        self[[7,4]] = King.new(:K,[7,4], true)
 
         #Pawns starting pos
-        (0..7).each {|col| @grid[1,col] = Pawn.new(:P,[1,col])}
-        (0..7).each {|col| @grid[6,col] = Pawn.new(:P,[6,col])}
+        (0..7).each {|col| self[[1,col]] = Pawn.new(:P,[1,col], false)}
+        (0..7).each {|col| self[[6,col]] = Pawn.new(:P,[6,col], true)}
         
         i = 0
         while i < @grid.length
             j = 0
             while j < @grid.length
-                if @grid[i,j] == :_ 
-                    @grid[i,j] = NullPiece.new(O,[i,j])
+                if self[[i,j]] == :_ 
+                    self[[i,j]] = NullPiece.new(:_,[i,j])
                 end
                 j += 1
             end
@@ -80,4 +83,5 @@ end
 
 b = Board.new
 b.start_board
+b.move_piece([1,0],[2,0])
 b.render
