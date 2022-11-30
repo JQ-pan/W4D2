@@ -19,19 +19,30 @@ class Board
         if self[start_pos].is_a?(NullPiece)
             raise "no piece here"
         end
+
+        if (end_pos[0] < 0 || end_pos[0] > 7) || (end_pos[1] < 0 || end_pos[1] > 7)
+            raise "out of bounds"
+        end
+
         current = self[start_pos]
         self[start_pos] = :_
         self[end_pos] = current
     end
 
+    
+
+
+
     def render
-        @grid.each do |row|
+        puts "- 0 1 2 3 4 5 6 7 "
+        @grid.each_with_index do |row, idx|
+            print "#{idx} "
             row.each do |ele|
                 print "#{ele.name} "
-
             end
             puts ""
         end
+        return " "
     end
 
     def start_board
@@ -70,7 +81,7 @@ class Board
             j = 0
             while j < @grid.length
                 if self[[i,j]] == :_ 
-                    self[[i,j]] = NullPiece.new(:_,[i,j])
+                    self[[i,j]] = NullPiece.new(:_,[i,j], nil)
                 end
                 j += 1
             end
